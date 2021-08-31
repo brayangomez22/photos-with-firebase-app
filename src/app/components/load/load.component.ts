@@ -8,6 +8,7 @@ import { LoadImagesService } from '../../services/load-images.service';
   styles: [],
 })
 export class LoadComponent implements OnInit {
+  isOnElement = false;
   files: FileItem[] = [];
 
   constructor(public _loadImagesService: LoadImagesService) {}

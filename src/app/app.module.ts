@@ -9,9 +9,10 @@ import { AppRoutingModule } from './app.routes';
 
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
+import { NgDropFilesDirective } from './directives/ng-drop-files.directive';
 
 @NgModule({
-  declarations: [AppComponent, PhotosComponent, LoadComponent],
+  declarations: [AppComponent, PhotosComponent, LoadComponent, NgDropFilesDirective],
   imports: [
     BrowserModule,
     AppRoutingModule,
