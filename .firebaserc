@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "cloudfunction-ca347": {
+      "hosting": {
+        "photosFirebase": [
+          "cloudfunction-ca347"
+        ]
+      }
+    }
+  }
+}
