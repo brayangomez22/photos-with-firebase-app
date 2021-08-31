@@ -3,6 +3,7 @@
     <h3>Select files</h3>
     <div
       appNgDropFiles
+      [files]="files"
       (mouseOn)="isOnElement = $event"
       [ngClass]="{ 'file-over': isOnElement }"
       class="well drop-zone"
