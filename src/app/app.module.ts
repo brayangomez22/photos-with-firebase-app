@@ -7,8 +7,7 @@ import { PhotosComponent } from './components/photos/photos.component';
 import { LoadComponent } from './components/load/load.component';
 import { AppRoutingModule } from './app.routes';
 
-import { provideFirebaseApp, getApp, initializeApp } from '@angular/fire/app';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 
 @NgModule({
@@ -16,8 +15,7 @@ import { environment } from 'src/environments/environment';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-    provideFirestore(() => getFirestore()),
+    AngularFireModule.initializeApp(environment.firebaseConfig),
   ],
   providers: [],
   bootstrap: [AppComponent],

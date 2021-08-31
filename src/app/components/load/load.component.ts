@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Firestore, collectionData, collection } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
+import firebase from 'firebase/app';
 
 @Component({
   selector: 'app-load',
@@ -9,15 +10,15 @@ import { Observable } from 'rxjs';
 })
 export class LoadComponent implements OnInit {
   private FOLDER_IMAGES = 'img';
-  collection: any;
-  dataBD: any;
 
-  constructor(private db: Firestore) {}
+  constructor(
+    public firestore: AngularFirestore,
+    public auth: AngularFireAuth
+  ) {}
 
   ngOnInit(): void {}
 
   private saveImage(image: { name: string; url: string }) {
-    this.collection = collection(this.db, 'items');
-    this.dataBD.collectionData(`/${this.FOLDER_IMAGES}`).add(image);
+    this.firestore.collection(`/${this.FOLDER_IMAGES}`).add(image);
   }
 }
