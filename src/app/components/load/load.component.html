@@ -22,7 +22,7 @@
     >
       Upload to firebase
     </button>
-    <button class="btn btn-danger">Clean up</button>
+    <button (click)="cleanFiles()" class="btn btn-danger">Clean up</button>
 
     <table class="table">
       <thead class="thead-dark">
@@ -34,15 +34,15 @@
       </thead>
 
       <tbody>
-        <tr>
-          <td>XYZ</td>
-          <td>12 MG</td>
+        <tr *ngFor="let file of files">
+          <td>{{ file.nameFile }}</td>
+          <td>{{ file.file.size / 1024 / 1024 | number: ".2-2" }} MG</td>
           <td>
             <div class="progress">
               <div
                 class="progress-bar"
                 role="progressbar"
-                style="width: 25%"
+                [ngStyle]="{ width: file.progress + '%' }"
               ></div>
             </div>
           </td>
