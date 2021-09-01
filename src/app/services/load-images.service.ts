@@ -1,17 +1,11 @@
 import { Injectable } from '@angular/core';
 
-import { map } from 'rxjs/operators';
-
 import { FileItem } from '../models/file-item';
-
-import firebase from 'firebase';
 import 'firebase/storage';
-import {
-  AngularFirestore,
-  AngularFirestoreCollection,
-} from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 
-import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { finalize } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -19,36 +13,44 @@ import { AngularFireAuth } from '@angular/fire/auth';
 export class LoadImagesService {
   private FOLDER_IMAGES = 'img';
 
-  constructor(public firestore: AngularFirestore) {}
+  constructor(
+    public firestore: AngularFirestore,
+    private storage: AngularFireStorage
+  ) {}
 
   loadImagesFirebase(images: FileItem[]) {
-    const storageRef = firebase.storage().ref();
-
     for (const item of images) {
       item.isGoing = true;
       if (item.progress >= 100) {
         continue;
       }
 
-      const uploadTask: firebase.storage.UploadTask = storageRef
-        .child(`${this.FOLDER_IMAGES}/${item.nameFile}`)
-        .put(item.file);
+      const file = item.file;
+      const filePath = `${this.FOLDER_IMAGES}/${item.nameFile}`;
+      const fileRef = this.storage.ref(filePath);
+      const uploadTask = this.storage.upload(filePath, file);
 
-      uploadTask.on(
-        firebase.storage.TaskEvent.STATE_CHANGED,
-        (snapshot: firebase.storage.UploadTaskSnapshot) => {
-          (item.progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100),
-            () => {
-              console.log('Img ready');
+      // con esta función nos suscribimos a los cambios en el progreso
+      uploadTask
+        .percentageChanges()
+        .subscribe((resp) => (item.progress = Number(resp)));
+      // obtengo el url de descarga cuando este disponible
+      uploadTask
+        .snapshotChanges()
+        .pipe(
+          finalize(() =>
+            fileRef.getDownloadURL().subscribe((url) => {
+              console.log('Imagen cargada con exito');
+              item.url = url;
               item.isGoing = false;
               this.saveImage({
                 name: item.nameFile,
                 url: item.url,
               });
-            };
-        }
-      );
+            })
+          )
+        )
+        .subscribe();
     }
   }
 
